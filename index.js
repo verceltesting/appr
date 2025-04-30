@@ -1,9 +1,15 @@
+
 const express = require('express');
 const fs = require('fs');
 const bodyParser = require('body-parser');
 const { ethers } = require('ethers');
 require('dotenv').config();
 console.log("RPC_URL:", process.env.RPC_URL); // Debug line
+
+const { ethers } = require('ethers');
+
+const provider = new ethers.JsonRpcProvider('<RPC_URL>');
+
 
 
 const app = express();
