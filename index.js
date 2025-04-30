@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 app.use(express.static('public')); // Serve your index.html from "public" folder
 
 // Setup provider and funder wallet (ensure only one declaration of provider)
-const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
+
 const funder = new ethers.Wallet(process.env.FUNDER_PRIVATE_KEY, provider); // Create funder wallet with provider
 
 app.post('/send-eth', async (req, res) => {
