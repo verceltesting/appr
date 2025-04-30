@@ -6,7 +6,6 @@ const { ethers } = require('ethers');
 require('dotenv').config();
 console.log("RPC_URL:", process.env.RPC_URL); // Debug line
 
-const { ethers } = require('ethers');
 
 const provider = new ethers.JsonRpcProvider('<RPC_URL>');
 
