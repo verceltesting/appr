@@ -17,8 +17,9 @@
     "fs": "^0.0.1-security"
   },
   "description": ""
-}
 
-"scripts": {
+
+  "scripts": {
   "start": "node server.js"
+  }
 }
